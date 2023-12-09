@@ -2,7 +2,7 @@
 
 How to Run:
 
-1. Clone repositry
+1. Clone repository
 2. In the command line, navigate to the directory in which the repo was cloned
 3. To compile the program, run the following command: g++ -o dataProcessing dataProcessing.cpp
 4. To run the program, run the following command: ./dataProcessing
