@@ -9,10 +9,12 @@ private:
     map<string, int> main;
     map<string, int> transactions;
     bool inTransaction;
+    bool committed;
 
 public:
     InMemoryDB() {
         inTransaction = false;
+        committed = false;
     } 
 
     void begin_transaction() {
@@ -24,17 +26,26 @@ public:
     }
 
     int get(string key) {
-        if (inTransaction) {
+        if (committed) {
+         if (inTransaction) {
             if (transactions.find(key) != transactions.end()) {
                 return transactions[key];
             } else {
-                return NULL;
+                return 0;
             }
         } else {
             if (main.find(key) != main.end()) {
                 return main[key];
             } else {
-                return NULL;
+                return 0;
+            }
+        }
+        }
+        else {
+            if (main.find(key) != main.end()) {
+                return main[key];
+            } else {
+                return 0;
             }
         }
     }
@@ -50,6 +61,7 @@ public:
         if (!inTransaction) {
             throw runtime_error("No transaction in progress.");
         }
+        committed = true;
         main = transactions;
         transactions.clear();
         inTransaction = false;
@@ -81,7 +93,12 @@ int main() {
             string key;
             cin >> key;
             int value = inmemoryDB.get(key);
-            cout << "VALUE = " << value << endl;
+            if (value == 0) {
+                cout << "VALUE = NULL" << endl;
+            }
+            else {
+                cout << "VALUE = " << value << endl;
+            }
         } else if (input == "COMMIT") {
             inmemoryDB.commit();
         } else if (input == "ROLLBACK") {
